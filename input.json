@@ -1,0 +1,28 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "Timelock.sol": {
+      "urls": [
+        "./Timelock.sol"
+      ]
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 10000
+    },
+    "viaIR": true,
+    "metadata": {
+      "useLiteralContent": true
+    },
+    "outputSelection": {
+      "Timelock.sol": {
+        "Timelock": [
+          "metadata",
+          "evm.bytecode.object"
+        ]
+      }
+    }
+  }
+}
