@@ -69,7 +69,7 @@ contract Timelock {
   /// Send tokens to this smart contract for locking up.
   /// IMPORTANT: Tokens MUST be deposited via this function ONLY or else they will not be able to be withdrawn!
   /// @param token The ERC-20 token to transfer to this smart contract. This smart contract must be approved to call
-  ///     `transferFrom` on the ERC-20 to move tokens.
+  /// `transferFrom` on the ERC-20 to move tokens.
   /// @param amount The number of tokens to transfer to this smart contract.
   function deposit(address token, uint256 amount) external {
     ERC20 erc20 = ERC20(token);
