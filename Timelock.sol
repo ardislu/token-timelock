@@ -16,10 +16,15 @@ contract Timelock {
   /// The current amount of tokens stored in this smart contract by owner and then by token.
   mapping(address => mapping(address => uint256)) public balance;
 
-  /// Provided block number is too small. `blockNumber` must be greater than `currentBlockNumber`.
-  /// @param currentBlockNumber The currently set block number for this timelock.
+  /// Can't set token lock in the past. `blockNumber` must be greater than `currentBlockNumber`.
+  /// @param currentBlockNumber The latest block height (`block.number`).
   /// @param blockNumber The block number provided to update the timelock.
-  error BlockNumberTooSmall(uint256 currentBlockNumber, uint256 blockNumber);
+  error BlockNumberInPast(uint256 currentBlockNumber, uint256 blockNumber);
+
+  /// Can't set token lock below previous lock. `blockNumber` must be greater than `setBlockNumber`.
+  /// @param setBlockNumber The currently set block number for this timelock.
+  /// @param blockNumber The block number provided to update the timelock.
+  error BlockNumberBelowPrevious(uint256 setBlockNumber, uint256 blockNumber);
 
   /// Unable to successfully call the ERC-20 `transferFrom` function.
   error DepositTransferFailed();
@@ -59,8 +64,11 @@ contract Timelock {
   /// @param token The token to restrict withdrawals for.
   /// @param blockNumber The minimum block number that must be passed before tokens may be withdrawn.
   function setTimelock(address token, uint256 blockNumber) external {
+    if (block.number >= blockNumber) {
+      revert BlockNumberInPast(block.number, blockNumber);
+    }
     if (timelock[msg.sender][token] >= blockNumber) {
-      revert BlockNumberTooSmall(timelock[msg.sender][token], blockNumber);
+      revert BlockNumberBelowPrevious(timelock[msg.sender][token], blockNumber);
     }
     timelock[msg.sender][token] = blockNumber;
     emit Lock(msg.sender, token, blockNumber);
