@@ -74,9 +74,9 @@ contract TestTimelock {
     // Preconditions:
     vm.assume(rand1 > 1 && rand2 > 0);
     vm.roll(1); // Set block.number to 1
-    uint256 lock = 30_000_001;
+    uint256 lock = 30_000_000;
     uint256 initialBalance = token.balanceOf(u1);
-    uint256 blockNumber = rand1 % lock;
+    uint256 blockNumber = rand1 % lock + 2; // 1 < blockNumber < 30,000,003
     uint256 value = rand2 % initialBalance;
 
     // Action:
