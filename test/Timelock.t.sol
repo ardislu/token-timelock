@@ -94,4 +94,22 @@ contract TestTimelock {
     require(finalBalance == initialBalance - value);
     require(token.balanceOf(address(timelock)) == value);
   }
+
+  // It should never be possible to set the timelock to a lower block number
+  function testSetLowerTimelock(uint256 rand1, uint256 rand2) public {
+    // Preconditions:
+    vm.assume(rand2 > 1 && rand1 > rand2);
+    vm.roll(1);
+
+    // Action:
+    vm.startPrank(u1);
+    timelock.setTimelock(address(token), rand1);
+
+    // Postconditions:
+    vm.expectRevert();
+    timelock.setTimelock(address(token), rand2);
+    vm.expectRevert();
+    timelock.withdraw(address(token), 0);
+    vm.stopPrank();
+  }
 }
