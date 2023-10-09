@@ -40,9 +40,9 @@ contract TestTimelock {
 
   // Confirm that setUp() works
   function testSetUp() public view {
-    require(u1.balance == 100e18);
-    require(token.balanceOf(u1) == 100e18);
-    require(token.totalSupply() == 100e18);
+    assert(u1.balance == 100e18);
+    assert(token.balanceOf(u1) == 100e18);
+    assert(token.totalSupply() == 100e18);
   }
 
   // A deposit and immediate withdrawal should have no effect
@@ -64,9 +64,9 @@ contract TestTimelock {
     uint256 finalAllowance = token.allowance(u1, address(timelock));
     uint256 finalBalance = token.balanceOf(u1);
     uint256 finalTimelockBalance = token.balanceOf(address(timelock));
-    require(initialAllowance == finalAllowance);
-    require(initialBalance == finalBalance);
-    require(initialTimelockBalance == finalTimelockBalance);
+    assert(initialAllowance == finalAllowance);
+    assert(initialBalance == finalBalance);
+    assert(initialTimelockBalance == finalTimelockBalance);
   }
 
   // It should never be possible to withdraw before the lock has expired
@@ -91,8 +91,8 @@ contract TestTimelock {
 
     // Postconditions:
     uint256 finalBalance = token.balanceOf(u1);
-    require(finalBalance == initialBalance - value);
-    require(token.balanceOf(address(timelock)) == value);
+    assert(finalBalance == initialBalance - value);
+    assert(token.balanceOf(address(timelock)) == value);
   }
 
   // It should never be possible to set the timelock to a lower block number
