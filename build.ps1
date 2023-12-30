@@ -5,3 +5,4 @@ $metadata | Out-File -NoNewLine ./dist/Timelock-metadata.json
 $newInput = Get-Content ./input.json | ConvertFrom-Json
 $newInput.sources = ($metadata | ConvertFrom-Json).sources
 $newInput | ConvertTo-Json -Depth 5 | Out-File -NoNewLine ./dist/Timelock-input.json
+(Get-Content ./dist/Timelock-input.json) -join "`n" | Set-Content -NoNewline ./dist/Timelock-input.json # Convert CRLF to LF
