@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.26;
 
 import '../Timelock.sol';
 import './TestToken.sol';
@@ -93,6 +93,32 @@ contract TestTimelock {
     uint256 finalBalance = token.balanceOf(u1);
     assert(finalBalance == initialBalance - value);
     assert(token.balanceOf(address(timelock)) == value);
+  } 
+  
+  // It should always be possible to withdraw after the timelock has expired
+  function testValidWithdraw(uint256 rand1, uint256 rand2) public {
+    // Preconditions:
+    vm.assume(rand1 > 1 && rand2 > 0);
+    vm.roll(1);
+    uint256 lock = 30_000_000;
+    uint256 initialBalance = token.balanceOf(u1);
+    uint256 blockNumber = rand1 % lock + 2; // 1 < blockNumber < 30,000,003
+    uint256 value = rand2 % initialBalance;
+
+    // Action:
+    vm.startPrank(u1);
+    timelock.setTimelock(address(token), blockNumber);
+    token.approve(address(timelock), value);
+    timelock.deposit(address(token), value);
+
+    vm.roll(blockNumber + 1);
+    timelock.withdraw(address(token), value);
+    vm.stopPrank();
+
+    // Postconditions:
+    uint256 finalBalance = token.balanceOf(u1);
+    assert(finalBalance == initialBalance);
+    assert(token.balanceOf(address(timelock)) == 0);
   }
 
   // It should never be possible to set the timelock to a lower block number
