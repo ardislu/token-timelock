@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.27;
 
 interface ERC20 {
   function transfer(address to, uint256 amount) external returns (bool);
@@ -64,9 +64,7 @@ contract Timelock {
   /// @param token The token to restrict withdrawals for.
   /// @param blockNumber The minimum block number that must be passed before tokens may be withdrawn.
   function setTimelock(address token, uint256 blockNumber) external {
-    if (block.number >= blockNumber) {
-      revert BlockNumberInPast(block.number, blockNumber);
-    }
+    require(block.number < blockNumber, BlockNumberInPast(block.number, blockNumber));
     if (timelock[msg.sender][token] >= blockNumber) {
       revert BlockNumberBelowPrevious(timelock[msg.sender][token], blockNumber);
     }

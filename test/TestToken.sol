@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.27;
 
 /// Minimal ERC-20 token intended to be used in test scripts only.
 /// https://github.com/ardislu/minimal-test-erc20/
